@@ -233,6 +233,52 @@ class BinanceSocketManager(threading.Thread):
         socket_name = '{}@kline_{}'.format(symbol.lower(), interval)
         return self._start_socket(socket_name, callback)
 
+    def start_future_kline_socket(self, symbol, callback, interval=Client.KLINE_INTERVAL_1MINUTE):
+        """Start a websocket for symbol kline data
+
+        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#klinecandlestick-streams
+
+        :param symbol: required
+        :type symbol: str
+        :param callback: callback function to handle messages
+        :type callback: function
+        :param interval: Kline interval, default KLINE_INTERVAL_1MINUTE
+        :type interval: str
+
+        :returns: connection key string if successful, False otherwise
+
+        Message Format
+
+        .. code-block:: python
+
+            {
+                "e": "kline",					# event type
+                "E": 1499404907056,				# event time
+                "s": "ETHBTC",					# symbol
+                "k": {
+                    "t": 1499404860000, 		# start time of this bar
+                    "T": 1499404919999, 		# end time of this bar
+                    "s": "ETHBTC",				# symbol
+                    "i": "1m",					# interval
+                    "f": 77462,					# first trade id
+                    "L": 77465,					# last trade id
+                    "o": "0.10278577",			# open
+                    "c": "0.10278645",			# close
+                    "h": "0.10278712",			# high
+                    "l": "0.10278518",			# low
+                    "v": "17.47929838",			# volume
+                    "n": 4,						# number of trades
+                    "x": false,					# whether this bar is final
+                    "q": "1.79662878",			# quote volume
+                    "V": "2.34879839",			# volume of active buy
+                    "Q": "0.24142166",			# quote volume of active buy
+                    "B": "13279784.01349473"	# can be ignored
+                    }
+            }
+        """
+        socket_name = '{}@kline_{}'.format(symbol.lower(), interval)
+        return self._start_futures_socket(socket_name, callback)
+
     def start_miniticker_socket(self, callback, update_time=1000):
         """Start a miniticker websocket for all trades
 
